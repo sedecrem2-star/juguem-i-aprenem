@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#f4fbff"><title>Juguem amb més lletres · Aula PT MRN</title>
+<style>
+:root{--ink:#26334a;--blue:#315b98;--pale:#f3f9fd;--mint:#e2f8ef;--yellow:#fff2cf;--pink:#ffebf0}
+*{box-sizing:border-box}body{margin:0;background:var(--pale);color:var(--ink);font-family:system-ui,-apple-system,'Arial Rounded MT Bold',sans-serif}button{font:inherit;cursor:pointer;touch-action:manipulation}main{max-width:1050px;margin:auto;padding:14px 15px 35px}header{text-align:center;padding:12px 0 6px}h1{font-size:clamp(27px,5vw,44px);margin:5px 0}header p{margin:5px;color:#50647b}.modes,.letters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}.modes button{padding:12px 16px;border:2px solid #d0ddeb;background:white;border-radius:15px;font-weight:750;color:var(--ink);font-size:clamp(15px,2.5vw,19px);min-height:52px}.modes button.active{background:var(--blue);color:white;border-color:var(--blue)}.letters{max-height:124px;overflow-y:auto;padding:3px 0 8px}.letters button{border:2px solid #dce4ef;background:white;color:#243a59;border-radius:12px;min-width:48px;min-height:49px;font-size:21px;font-weight:800;padding:6px 10px}.letters button.active{background:#ffe3a8;border-color:#dc9855}.panel{background:#fff;border-radius:27px;box-shadow:0 6px 23px #284e7118;padding:clamp(18px,4vw,32px);min-height:445px}.eyebrow{text-align:center;color:#587089;font-size:17px;font-weight:700}.question{text-align:center;font-size:clamp(23px,4.2vw,33px);font-weight:850;margin:8px 0}.hero{font-size:clamp(80px,17vw,140px);color:#d97c43;text-align:center;line-height:1.1;font-weight:900;margin:6px 0}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:730px;margin:20px auto}.tile{border:4px solid #d7e3ef;border-radius:24px;min-height:165px;background:#edf5ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;color:var(--ink);font-size:clamp(34px,9vw,76px);font-weight:850;overflow-wrap:anywhere}.tile:nth-child(2){background:var(--mint)}.tile .emoji{font-size:clamp(62px,13vw,103px);line-height:1.15}.tile .word{font-size:clamp(24px,5vw,37px)}.tile:focus-visible,.modes button:focus-visible{outline:4px solid #ffac4c}.tile.correct{background:#d6f8df;border-color:#24a364}.tile.incorrect{border-color:#e6b06c}.feedback{text-align:center;min-height:42px;font-size:clamp(20px,3vw,29px);font-weight:800}.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:13px 0}.controls button{min-height:55px;border:0;border-radius:16px;background:var(--blue);color:white;font-size:19px;font-weight:750;padding:12px 20px}.controls .light{background:#e9eef6;color:var(--ink)}.counter{text-align:center;color:#60728b;margin:12px}.tip{background:#fff8e8;border-radius:15px;padding:13px 17px;text-align:center;color:#4d5160;margin:18px auto 0;max-width:900px;font-size:15px;line-height:1.45}.micro{font-size:16px;text-align:center;color:#6d7890;margin:7px}.mini-nav{border:0;background:none;color:#365f9c;text-decoration:underline;font-weight:750}.sr-only{position:absolute;left:-9999px} @media(max-width:520px){.tile{min-height:143px}.letters{max-height:108px}.panel{min-height:400px}.modes button{padding:9px 12px}.controls button{padding:10px 13px;font-size:17px}}
+</style></head><body><main><header><h1>🌈 Juguem amb més lletres!</h1><p>Aula PT MRN · Lectoescriptura inicial en valencià</p></header><nav aria-label="Tipus d'activitat" class="modes" id="modes"></nav><div class="micro">Tria una lletra o passa a la següent:</div><nav aria-label="Lletres" class="letters" id="letters"></nav><section class="panel" id="panel" aria-live="polite"></section><div class="tip">💛 Pots mirar, escoltar, tocar o parar. Sense presses ni obligació de parlar. El comunicador ha d'estar disponible. Per a escoltar, toca <b>🔊 Escoltar</b> (la veu depén del dispositiu).</div></main>
+<script>
+'use strict';
+const DATA=[
+{k:'A',w:'ABELLA',e:'🐝',other:'AVIÓ',otherEmoji:'✈️'},
+{k:'E',w:'ELEFANT',e:'🐘',other:'ESTRELLA',otherEmoji:'⭐'},
+{k:'I',w:'ILLA',e:'🏝️',other:'IGLÚ',otherEmoji:'🧊'},
+{k:'O',w:'OS',e:'🐻',other:'OVELLA',otherEmoji:'🐑'},
+{k:'U',w:'ULL',e:'👁️',other:'ULLERES',otherEmoji:'👓'},
+{k:'P',w:'POMA',e:'🍎',other:'PILOTA',otherEmoji:'⚽'},
+{k:'M',w:'MÀ',e:'✋',other:'MEL',otherEmoji:'🍯'},
+{k:'L',w:'LUPA',e:'🔎',other:'LLET',otherEmoji:'🥛'},
+{k:'S',w:'SOL',e:'☀️',other:'SOPA',otherEmoji:'🥣'},
+{k:'T',w:'TOMACA',e:'🍅',other:'TAMBOR',otherEmoji:'🥁'},
+{k:'N',w:'NAS',e:'👃',other:'NÚVOL',otherEmoji:'☁️'},
+{k:'D',w:'DIT',e:'☝️',other:'DAU',otherEmoji:'🎲'},
+{k:'C',w:'CASA',e:'🏠',other:'CAMIÓ',otherEmoji:'🚚'},
+{k:'QU',w:'QUILO',e:'⚖️',other:'QUADERN',otherEmoji:'📒'},
+{k:'R',w:'ROSA',e:'🌹',other:'RATOLÍ',otherEmoji:'🐭'},
+{k:'RR',w:'CARRO',e:'🛒',other:'TORRE',otherEmoji:'🏰'},
+{k:'B',w:'BOTA',e:'🥾',other:'BALENA',otherEmoji:'🐳'}
+];
+const modes=[{id:'listen',name:'🔊 Escolta'},{id:'same',name:'🔎 Busca la lletra'},{id:'picture',name:'🖼️ Escolta i tria'},{id:'word',name:'📖 Busca la paraula'}];
+let i=0,mode='listen',round=0,answered=false, voiceReady=false;
+function voice(str){if(!('speechSynthesis' in window))return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(str);u.lang='ca-ES';u.rate=.78;u.pitch=1.04;const v=window.speechSynthesis.getVoices().find(x=>/^ca([_-]|$)/i.test(x.lang));if(v)u.voice=v;window.speechSynthesis.speak(u)}catch(e){}}
+function alt(){return DATA[(i+3+round)%DATA.length]}
+function mkChoice(label,good,img=false){let display=img?'<span class="emoji">'+label+'</span>':'<span class="word">'+label+'</span>';return `<button type="button" class="tile" data-good="${good?1:0}" aria-label="${label}">${display}</button>`}
+function options(a,b,img=false){return ((i+round)%2===0)?mkChoice(b,false,img)+mkChoice(a,true,img):mkChoice(a,true,img)+mkChoice(b,false,img)}
+function changeMode(m){mode=m;answered=false;round=0;render()}
+function jump(j){i=j;answered=false;round=0;render()}
+function promptFor(l){if(mode==='same')return 'Busca la lletra '+l.k;if(mode==='picture')return 'On està '+l.w.toLowerCase()+'?';if(mode==='word')return 'Busca la paraula '+l.w.toLowerCase();return l.k==='RR'?'Erra doble, com en carro':l.k+' de '+l.w.toLowerCase()}
+function render(){const d=DATA[i],distr=alt();document.getElementById('modes').innerHTML=modes.map(m=>`<button type="button" data-mode="${m.id}" class="${m.id===mode?'active':''}">${m.name}</button>`).join('');document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>changeMode(b.dataset.mode));document.getElementById('letters').innerHTML=DATA.map((l,j)=>`<button type="button" data-index="${j}" class="${i===j?'active':''}" aria-label="Lletra ${l.k}">${l.k}</button>`).join('');document.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=>jump(Number(b.dataset.index)));
+let h='';if(mode==='listen')h=`<div class="eyebrow">Mira, escolta i toca</div><div class="hero">${d.k} <small style="font-size:.65em">${d.k.toLowerCase()}</small></div><div class="choices">${mkChoice(d.e,true,true)}${mkChoice(d.w,true)}</div><div class="question">${d.k==='RR'?'RR en CARRO':d.k+' de '+d.w.toLowerCase()}</div>`;
+else if(mode==='same')h=`<div class="eyebrow">Busca la lletra igual</div><div class="hero">${d.k}</div><div class="question">On està la ${d.k}?</div><div class="choices">${options(d.k,distr.k)}</div>`;
+else if(mode==='picture')h=`<div class="eyebrow">Escolta la paraula</div><div class="question">On està <b>${d.w.toLowerCase()}</b>?</div><div class="choices">${options(d.e,distr.e,true)}</div>`;
+else h=`<div class="eyebrow">Relaciona lletra i paraula</div><div class="hero">${d.k}</div><div class="question">Busca <b>${d.w}</b></div><div class="choices">${options(d.w,distr.w)}</div>`;
+h+=`<div class="feedback" id="feedback" role="status"></div><div class="controls"><button type="button" class="light" id="prev">◀ Anterior</button><button type="button" id="hear">🔊 Escoltar</button><button type="button" id="next">Següent ▶</button></div><div class="counter">Lletra ${i+1} de ${DATA.length} · ${modes.find(m=>m.id===mode).name}</div>`;
+document.getElementById('panel').innerHTML=h;document.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{const good=b.dataset.good==='1';let fb=document.getElementById('feedback');if(mode==='listen'||good){b.classList.add('correct');fb.textContent='🌟 Molt bé!';voice(mode==='listen'?d.w:'Molt bé! '+d.w);answered=true}else{b.classList.add('incorrect');fb.textContent='Ho mirem juntes?';voice('Ho mirem juntes?')}});
+document.getElementById('prev').onclick=()=>jump((i-1+DATA.length)%DATA.length);document.getElementById('next').onclick=()=>jump((i+1)%DATA.length);document.getElementById('hear').onclick=()=>voice(promptFor(d));}
+render();
+</script></body></html>
